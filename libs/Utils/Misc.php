@@ -214,4 +214,49 @@ class Misc
 
         return false;
     }
+
+    /**
+         * Act as a reverse proxy, get a JSON from a remote endpoint
+         * and return it
+         *
+         * @param  string   $url        Base URL
+         * @param  array    $params     Query arguments
+         * @return string               The JSON from the remote endpoint
+         */
+    public static function proxyPass($url, $params = array())
+    {
+        if (count($params) > 0)
+        {
+            $query = http_build_query($params);
+            $query = preg_replace('/%5B(?:\d+)%5D=/', '=', $query);
+            $full_url = "$url?$query";
+        }
+        else
+        {
+            $full_url = "$url";
+        }
+
+        if (!function_exists('curl_version'))
+        {
+            $output = @file_get_contents($full_url);
+        }
+        else
+        {
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_CONNECTTIMEOUT  => 5,
+                CURLOPT_TIMEOUT         => 10,
+                CURLOPT_RETURNTRANSFER  => true,
+                CURLOPT_USERAGENT       => 'eZ Server Monitor `Web',
+                CURLOPT_URL => $full_url
+                ));
+
+            $output = curl_exec($curl);
+
+            curl_close($curl);
+        }
+
+        return $output;
+    }
 }
