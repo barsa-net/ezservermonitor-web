@@ -25,7 +25,7 @@ if (count($Config->get('services:list')) > 0)
             $status = 0;
 
         $datas[] = array(
-            'port'      => $show_port === true ? $port : '',
+            'port'      => $show_port === true ? $port."/".$protocol : '',
             'name'      => $name,
             'status'    => $status,
         );
