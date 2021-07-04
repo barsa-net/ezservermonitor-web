@@ -344,7 +344,7 @@ class Misc
 
                             $response = json_decode(self::proxyPass($service_url), true);
                             $datas[] = array(
-                                'port' => $response['port'],
+                                'port' => $Config->get('services:show_port') === true ? $response['port'] : '',
                                 'name' => $name,
                                 'status' => $response['status']
                             );
