@@ -5,7 +5,12 @@
         "check_updates": true,
         "auto_refresh": 0,
         "theme": "blue",
-        "custom_title": ""
+        "custom_title": "",
+        "agent": {
+            "enabled": false,
+            "url": "",
+            "suffix": ""
+        }
     },
     "cpu": {
         "enable_temperature": true
