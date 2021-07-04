@@ -2,6 +2,8 @@
 require '../autoload.php';
 $Config = new Config();
 
+header('Content-Type: application/json');
+
 $datas = array();
 
 # if there are more than 7 awk's colums it means the mount point name contains spaces

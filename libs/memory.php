@@ -1,6 +1,8 @@
 <?php
 require '../autoload.php';
 
+header('Content-Type: application/json');
+
 $free = 0;
 
 if (shell_exec('cat /proc/meminfo'))

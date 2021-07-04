@@ -1,6 +1,8 @@
 <?php
 require '../autoload.php';
 
+header('Content-Type: application/json');
+
 $datas    = array();
 $network  = array();
 

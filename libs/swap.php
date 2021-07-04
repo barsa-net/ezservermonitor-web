@@ -1,6 +1,8 @@
 <?php
 require '../autoload.php';
 
+header('Content-Type: application/json');
+
 // Free
 if (!($free = shell_exec('grep SwapFree /proc/meminfo | awk \'{print $2}\'')))
 {

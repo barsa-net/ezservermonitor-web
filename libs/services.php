@@ -2,6 +2,7 @@
 require '../autoload.php';
 $Config = new Config();
 
+header('Content-Type: application/json');
 
 $datas = array();
 

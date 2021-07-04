@@ -2,6 +2,8 @@
 require '../autoload.php';
 $Config = new Config();
 
+header('Content-Type: application/json');
+
 // Number of cores
 $num_cores = Misc::getCpuCoresNumber();
 

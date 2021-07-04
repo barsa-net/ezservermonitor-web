@@ -1,6 +1,8 @@
 <?php
 require '../autoload.php';
 
+header('Content-Type: application/json');
+
 if (!($load_tmp = shell_exec('cat /proc/loadavg | awk \'{print $1","$2","$3}\'')))
 {
     $load = array(0, 0, 0);

@@ -1,5 +1,8 @@
 <?php
 require '../autoload.php';
+
+header('Content-Type: application/json');
+
 date_default_timezone_set(@date_default_timezone_get());
 
 // Hostname
