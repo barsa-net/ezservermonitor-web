@@ -4,6 +4,12 @@ $Config = new Config();
 
 header('Content-Type: application/json');
 
+if ($Config->get('esm:agent:enabled'))
+{
+    Misc::agentServe(__FILE__);
+    return;
+}
+
 // Number of cores
 $num_cores = Misc::getCpuCoresNumber();
 

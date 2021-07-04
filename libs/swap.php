@@ -1,7 +1,14 @@
 <?php
 require '../autoload.php';
+$Config = new Config();
 
 header('Content-Type: application/json');
+
+if ($Config->get('esm:agent:enabled'))
+{
+    Misc::agentServe(__FILE__);
+    return;
+}
 
 // Free
 if (!($free = shell_exec('grep SwapFree /proc/meminfo | awk \'{print $2}\'')))

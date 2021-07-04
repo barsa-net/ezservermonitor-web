@@ -8,6 +8,12 @@ $datas = array();
 
 if ($Config->get('last_login:enable'))
 {
+    if ($Config->get('esm:agent:enabled'))
+    {
+        Misc::agentServe(__FILE__);
+        return;
+    }
+
     if (!(exec('/usr/bin/lastlog --time 365 | awk \'{ printf $1";"; for (i=4; i<NF; i++) printf $i" "; print $NF; }\'', $users)))
     {
         $datas[] = array(

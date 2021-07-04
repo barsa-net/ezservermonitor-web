@@ -4,6 +4,12 @@ $Config = new Config();
 
 header('Content-Type: application/json');
 
+if ($Config->get('esm:agent:enabled'))
+{
+    Misc::agentServe(__FILE__);
+    return;
+}
+
 $datas = array();
 
 if (count($Config->get('ping:hosts')) > 0)

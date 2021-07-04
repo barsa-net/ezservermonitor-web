@@ -4,6 +4,12 @@ $Config = new Config();
 
 header('Content-Type: application/json');
 
+if ($Config->get('esm:agent:enabled'))
+{
+    Misc::agentServe(__FILE__);
+    return;
+}
+
 $datas = array();
 
 # if there are more than 7 awk's colums it means the mount point name contains spaces
