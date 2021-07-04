@@ -259,4 +259,104 @@ class Misc
 
         return $output;
     }
+
+    /**
+     * Build the request that needs to be passed to the remote agent
+     * and serve it via self::proxyPass
+     *
+     * @param  string   $file       It contains __FILE__ from the caller
+     * @return void
+     */
+    public static function agentServe($file)
+    {
+        $Config = new Config();
+
+        $endpoint = basename($file, ".php");
+        $url = $Config->get('esm:agent:url')."/".$endpoint.$Config->get('esm:agent:suffix');
+
+        $params = array();
+
+        if ($Config->get('esm:agent:suffix') != ".php")
+        {
+            switch ($endpoint)
+            {
+                case "cpu":
+                    if ($Config->get('cpu:enable_temperature'))
+                        $params = array('temperature' => $Config->get('cpu:enable_temperature'));
+                    break;
+
+                case "disk":
+                    if ($Config->get('disk:show_tmpfs'))
+                        $params += array('tmpfs' => $Config->get('disk:show_tmpfs'));
+
+                    if ($Config->get('disk:show_loop'))
+                        $params += array('loop' => $Config->get('disk:show_loop'));
+
+                    if ($Config->get('disk:show_filesystem'))
+                        $params += array('filesystem' => $Config->get('disk:show_filesystem'));
+
+                    if (count($Config->get('disk:ignore_mounts')) > 0)
+                        $params += array('ignore' => $Config->get('disk:ignore_mounts'));
+                    break;
+
+                case "last_login":
+                    $params = array('max' => $Config->get('last_login:max'));
+                    break;
+
+                case "ping":
+                    if (count($Config->get('ping:hosts')) > 0)
+                        $hosts = $Config->get('ping:hosts');
+                    else
+                        $hosts = array('google.com', 'wikipedia.org');
+
+                    $datas = array();
+
+                    foreach ($hosts as $host)
+                    {
+                        $ping_url = $url."/".$host;
+
+                        $response = json_decode(self::proxyPass($ping_url), true);
+                        $datas[] = array(
+                            'host' => $response['host'],
+                            'ping' => $response['ping']
+                        );
+                    }
+
+                    echo json_encode($datas);
+                    return;
+
+                case "services":
+                    $available_protocols = array('tcp', 'udp');
+
+                    if (count($Config->get('services:list')) > 0)
+                    {
+
+                        $datas = array();
+
+                        foreach ($Config->get('services:list') as $service)
+                        {
+                            $host     = $service['host'];
+                            $port     = $service['port'];
+                            $name     = $service['name'];
+                            $protocol = isset($service['protocol']) && in_array($service['protocol'], $available_protocols) ? $service['protocol'] : 'tcp';
+
+                            $service_url = $url."/".$host."/".$port."/".$protocol;
+
+                            $response = json_decode(self::proxyPass($service_url), true);
+                            $datas[] = array(
+                                'port' => $response['port'],
+                                'name' => $name,
+                                'status' => $response['status']
+                            );
+                        }
+                    }
+
+                    echo json_encode($datas);
+                    return;
+            }
+        }
+
+        echo self::proxyPass($url, $params);
+        return;
+    }
 }
