@@ -1,4 +1,5 @@
 <?php
+$Config = new Config();
 
 class Misc
 {
@@ -225,6 +226,7 @@ class Misc
      */
     public static function proxyPass($url, $params = array())
     {
+        global $Config;
         if (count($params) > 0)
         {
             $query = http_build_query($params);
@@ -244,13 +246,20 @@ class Misc
         {
             $curl = curl_init();
 
-            curl_setopt_array($curl, array(
+            $setopt = array(
                 CURLOPT_CONNECTTIMEOUT  => 5,
                 CURLOPT_TIMEOUT         => 10,
                 CURLOPT_RETURNTRANSFER  => true,
                 CURLOPT_USERAGENT       => 'eZ Server Monitor `Web',
-                CURLOPT_URL => $full_url
-                ));
+                CURLOPT_URL             => $full_url
+                );
+
+            if ($Config->get('esm:agent:unix_socket'))
+            {
+                $setopt += [CURLOPT_UNIX_SOCKET_PATH => '/var/run/agent.sock'];
+            }
+
+            curl_setopt_array($curl, $setopt);
 
             $output = curl_exec($curl);
 
@@ -269,14 +278,18 @@ class Misc
      */
     public static function agentServe($file)
     {
-        $Config = new Config();
+        global $Config;
 
         $endpoint = basename($file, ".php");
-        $url = $Config->get('esm:agent:url')."/".$endpoint.$Config->get('esm:agent:suffix');
+
+        if ($Config->get('esm:agent:unix_socket'))
+            $url = "http://localhost/".$endpoint;
+        else
+            $url = $Config->get('esm:agent:url')."/".$endpoint.$Config->get('esm:agent:suffix');
 
         $params = array();
 
-        if ($Config->get('esm:agent:suffix') != ".php")
+        if ($Config->get('esm:agent:suffix') != ".php" or $Config->get('esm:agent:unix_socket'))
         {
             switch ($endpoint)
             {
@@ -366,6 +379,8 @@ class Misc
      */
     public static function agentIp($url)
     {
+        global $Config;
+        $url = $Config->get('esm:agent:unix_socket') ? "http://localhost" : $url;
         $response = json_decode(self::proxyPass($url."/system/ip"), true);
         return empty($response) ? false : $response['ip'];
     }
@@ -378,6 +393,8 @@ class Misc
      */
     public static function agentHostname($url)
     {
+        global $Config;
+        $url = $Config->get('esm:agent:unix_socket') ? "http://localhost" : $url;
         $response = json_decode(self::proxyPass($url."/system/hostname"), true);
         return empty($response) ? self::getHostname() : $response['hostname'];
     }

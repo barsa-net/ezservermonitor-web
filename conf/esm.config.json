@@ -8,6 +8,7 @@
         "custom_title": "",
         "agent": {
             "enabled": false,
+            "unix_socket": false,
             "url": "",
             "suffix": ""
         }
