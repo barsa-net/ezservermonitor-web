@@ -45,7 +45,7 @@ $update = $Config->checkUpdate();
 <nav role="main">
     <div id="appname">
         <a href="index.php"><span class="icon-gauge"></span>eSM</a>
-        <a href="<?php echo $Config->get('esm:website'); ?>"><span class="subtitle">eZ Server Monitor - v<?php echo $Config->get('esm:version'); ?></span></a>
+        <a href="<?php echo $Config->get('esm:website'); ?>"><span class="subtitle">eZ Server Monitor - <?php echo $Config->get('esm:version'); ?></span></a>
     </div>
 
     <div id="hostname">
