@@ -63,7 +63,8 @@ $update = $Config->checkUpdate();
                 }
                 else
                 {
-                    $title = '<b style="font-size: larger;">WARNING: Cannot connect to agent at '.$Config->get('esm:agent:url').'</b>';
+                    $url = $Config->get('esm:agent:unix_socket') ? "/var/run/agent.sock" : $Config->get('esm:agent:url');
+                    $title = '<b style="font-size: larger;">WARNING: Cannot connect to agent at '.$url.'</b>';
                 }
             }
             else
