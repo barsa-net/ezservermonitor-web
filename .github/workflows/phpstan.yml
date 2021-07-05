@@ -1,0 +1,47 @@
+name: PHPStan
+
+on:
+  push:
+    branches:
+      - eSM-agent
+  pull_request:
+    branches:
+      - eSM-agent
+
+jobs:
+  baseline:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/phpstan/phpstan
+    steps:
+      - name: Check Out Repo on master
+        uses: actions/checkout@v2
+        with:
+          ref: 'master'
+      - name: Generating baseline
+        run: |
+          phpstan analyze $GITHUB_WORKSPACE -l 8 --generate-baseline
+      - name: 'Upload Baseline'
+        uses: actions/upload-artifact@v2
+        with:
+          name: baseline
+          path: phpstan-baseline.neon
+  code-quality:
+    needs: baseline
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/phpstan/phpstan
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v2
+      - name: Generating phpstan.neon
+        run: |
+          echo 'includes:' > $GITHUB_WORKSPACE/phpstan.neon
+          echo '  - phpstan-baseline.neon' >> $GITHUB_WORKSPACE/phpstan.neon
+      - name: Download baseline
+        uses: actions/download-artifact@v2
+        with:
+          name: baseline   
+      - name: Analyzing code
+        run: |
+          phpstan analyze --configuration phpstan.neon $GITHUB_WORKSPACE -l 8
