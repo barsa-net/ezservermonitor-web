@@ -357,4 +357,28 @@ class Misc
         echo self::proxyPass($url, $params);
         return;
     }
+
+    /**
+     * Connect to agent and on success returns agent IP, on failure returns false
+     *
+     * @param   string       $url       Agent base url
+     * @return  string|bool             Agent local IP
+     */
+    public static function agentIp($url)
+    {
+        $response = json_decode(self::proxyPass($url."/system/ip"), true);
+        return empty($response) ? false : $response['ip'];
+    }
+
+    /**
+     * Connect to agent and on success returns hostname of agent, on failure returns local hostname
+     *
+     * @param   string       $url       Agent base url
+     * @return  string                  Agent hostname
+     */
+    public static function agentHostname($url)
+    {
+        $response = json_decode(self::proxyPass($url."/system/hostname"), true);
+        return empty($response) ? self::getHostname() : $response['hostname'];
+    }
 }
