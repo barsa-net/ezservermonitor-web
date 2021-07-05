@@ -327,12 +327,10 @@ class Misc
 
                 case "services":
                     $available_protocols = array('tcp', 'udp');
+                    $datas = array();
 
                     if (count($Config->get('services:list')) > 0)
                     {
-
-                        $datas = array();
-
                         foreach ($Config->get('services:list') as $service)
                         {
                             $host     = $service['host'];
