@@ -257,7 +257,7 @@ class Misc
             curl_close($curl);
         }
 
-        return $output;
+        return is_bool($output) ? '[]' : $output;
     }
 
     /**
