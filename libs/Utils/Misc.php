@@ -216,13 +216,13 @@ class Misc
     }
 
     /**
-         * Act as a reverse proxy, get a JSON from a remote endpoint
-         * and return it
-         *
-         * @param  string   $url        Base URL
-         * @param  array    $params     Query arguments
-         * @return string               The JSON from the remote endpoint
-         */
+     * Act as a reverse proxy, get a JSON from a remote endpoint
+     * and return it
+     *
+     * @param  string          $url        Base URL
+     * @param  array<array>    $params     Query arguments
+     * @return string                      The JSON from the remote endpoint
+     */
     public static function proxyPass($url, $params = array())
     {
         if (count($params) > 0)
