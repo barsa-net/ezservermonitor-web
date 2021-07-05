@@ -8,7 +8,7 @@ $update = $Config->checkUpdate();
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1" /> 
-    <title>eZ Server Monitor - <?php echo Misc::getHostname(); ?></title>
+    <title>eZ Server Monitor - <?php echo $Config->get('esm:agent:enabled') ? Misc::agentHostname($Config->get('esm:agent:url')) : Misc::getHostname(); ?></title>
     <link rel="stylesheet" href="web/css/utilities.css" type="text/css">
     <link rel="stylesheet" href="web/css/frontend.css" type="text/css">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -53,7 +53,25 @@ $update = $Config->checkUpdate();
         if ($Config->get('esm:custom_title') != '')
             echo $Config->get('esm:custom_title');
         else
-            echo Misc::getHostname().' - '.Misc::getLanIP();
+        {
+            if ($Config->get('esm:agent:enabled'))
+            {
+                $url = $Config->get('esm:agent:url');
+                if ($LanIp = Misc::agentIp($url))
+                {
+                    $title = Misc::agentHostname($url).' - '.$LanIp;
+                }
+                else
+                {
+                    $title = '<b style="font-size: larger;">WARNING: Cannot connect to agent at '.$Config->get('esm:agent:url').'</b>';
+                }
+            }
+            else
+            {
+                $title = Misc::getHostname().' - '.Misc::getLanIP();
+            }
+            echo $title;
+        }
         ?>
     </div>
 
